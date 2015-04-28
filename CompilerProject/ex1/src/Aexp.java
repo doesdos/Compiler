@@ -20,11 +20,7 @@ public class Aexp {
 
         int i;
         for (i = 0; i <= 5; i++) {
-            if (i == 0) {
-                tag[i] = true;
-            } else {
-                tag[i] = false;
-            }
+            tag[i] = i == 0;
         }
         INTEGER = x;
         type = Type.integer();
@@ -34,11 +30,7 @@ public class Aexp {
 
         int i;
         for (i = 0; i <= 5; i++) {
-            if (i == 1) {
-                tag[i] = true;
-            } else {
-                tag[i] = false;
-            }
+            tag[i] = i == 1;
         }
         FLOAT = x;
         type = Type.floating();
@@ -49,11 +41,7 @@ public class Aexp {
         int i;
 
         for (i = 0; i <=5; i++) {
-            if (i == 2) {
-                tag[i] = true;
-            } else {
-                tag[i] = false;
-            }
+            tag[i] = i == 2;
         }
         if (SymbolTable.globalTable.get(x).getType().isInteger())
         {
@@ -75,13 +63,7 @@ public class Aexp {
         int i;
         for (i = 0; i <= 5; i++)
         {
-            if (i == 3)
-            {
-                tag[i] = true;
-            } else
-            {
-                tag[i] = false;
-            }
+            tag[i] = i == 3;
         }
         type = Type.bool();
         this.BOOL = x;
@@ -92,11 +74,7 @@ public class Aexp {
         int i;
 
         for (i = 0; i <= 5; i++) {
-            if (i == 4) {
-                tag[i] = true;
-            } else {
-                tag[i] = false;
-            }
+            tag[i] = i == 4;
         }
         
         if (x.getfi().getType().isInteger() && x.getse().getType().isInteger()) { 
@@ -122,11 +100,7 @@ public class Aexp {
         int i;
 
         for (i = 0; i <= 5; i++) {
-            if (i == 5) {
-                tag[i] = true;
-            } else {
-                tag[i] = false;
-            }
+            tag[i] = i == 5;
         }
         
         if (x.getArg().getType().isInteger()) { 
@@ -185,7 +159,8 @@ public class Aexp {
         return s;
     }
 
-    public TypeValue getval() {
+    public TypeValue getval()
+    {
         TypeValue num1,num2;
         Type type1, type2;
         TypeValue val = null;;
@@ -201,7 +176,8 @@ public class Aexp {
         else if (tag[3]) {
             val = new TypeValue(BOOL);
         }
-        else if (tag[4]) {
+        else if (tag[4]) 
+        {
             num1 = Operands.getfi().getval();
             num2 = Operands.getse().getval();
             
@@ -222,18 +198,9 @@ public class Aexp {
                 }
                 else 
                 {
-                    System.err.println("Error: Type mismatch at PLUS operator!");
-                    System.exit(0);
+                   ErrorType.type_mismatch_error("PLUS");
                 }
-                
-//                if (type1 == 0 && type2 == 0) {
-//                   val =Integer.toString(Integer.parseInt(num1) + Integer.parseInt(num2));
-//                } else if (type1 == 1 && type2 == 1) {
-//                   val = Float.toString(Float.parseFloat(num1) + Float.parseFloat(num2));
-//                } else {
-//                    System.err.println("Error: Type mismatch at PLUS operator!");
-//                    System.exit(0);
-//                }
+
             } 
             
             if (Operator == sym.MINUS) 
@@ -250,8 +217,7 @@ public class Aexp {
                 }
                 else 
                 {
-                    System.err.println("Error: Type mismatch at MINUS operator!");
-                    System.exit(0);
+                    ErrorType.type_mismatch_error("MINUS");
                 }
             } 
             
@@ -269,8 +235,7 @@ public class Aexp {
                 }
                 else 
                 {
-                    System.err.println("Error: Type mismatch at TIMES operator!");
-                    System.exit(0);
+                    ErrorType.type_mismatch_error("TIMES");
                 }
             }
             
@@ -288,111 +253,144 @@ public class Aexp {
                 }
                 else 
                 {
-                    System.err.println("Error: Type mismatch at DIVIDE operator!");
-                    System.exit(0);
+                    ErrorType.type_mismatch_error("DIVIDE");
                 }
             }
             
             else if (Operator == sym.EQUALTO)
             {
-                   if ( type1.isInteger() && type2.isInteger())
-                   {
-                        boolean thisval = (Integer) num1.getValue() == (Integer) num2.getValue();
-                        val = new TypeValue(thisval);
-
-                   } else if ( type1.isFloat() && type2.isFloat())
-                   {
-                       boolean thisval = (Float) num1.getValue() == (Float) num2.getValue();
-                       val = new TypeValue(thisval);
-                   }
-             }
+                if ( type1.isInteger() && type2.isInteger())
+                {
+                     boolean thisval = (Integer) num1.getValue() == (Integer) num2.getValue();
+                     val = new TypeValue(thisval);
+                } 
+                else if ( type1.isFloat() && type2.isFloat())
+                {
+                    boolean thisval = (Float) num1.getValue() == (Float) num2.getValue();
+                    val = new TypeValue(thisval);
+                }
+                else 
+                {
+                    ErrorType.type_mismatch_error("EQUALTO");
+                }
+            }
             
             else if (Operator == sym.LESSTHAN)
             {
-                   if ( type1.isInteger() && type2.isInteger() )
-                   {
-                        boolean thisval = (Integer) num1.getValue() < (Integer) num2.getValue();
-                        val = new TypeValue(thisval);
+                if ( type1.isInteger() && type2.isInteger() )
+                {
+                     boolean thisval = (Integer) num1.getValue() < (Integer) num2.getValue();
+                     val = new TypeValue(thisval);
 
-                   } else if ( type1.isFloat() && type2.isFloat())
-                   {
-                       boolean thisval = (Float) num1.getValue() < (Float) num2.getValue();
-                       val = new TypeValue(thisval);
-                   }
-             }
+                } else if ( type1.isFloat() && type2.isFloat())
+                {
+                    boolean thisval = (Float) num1.getValue() < (Float) num2.getValue();
+                    val = new TypeValue(thisval);
+                }
+                else 
+                {
+                    ErrorType.type_mismatch_error("LESSTHAN");
+                }
+            }
             
             else if (Operator == sym.GREATERTHAN)
             {
-                   if ( type1.isInteger() && type2.isInteger() )
-                   {
-                        boolean thisval = (Integer) num1.getValue() > (Integer) num2.getValue();
-                        val = new TypeValue(thisval);
+                if ( type1.isInteger() && type2.isInteger() )
+                {
+                     boolean thisval = (Integer) num1.getValue() > (Integer) num2.getValue();
+                     val = new TypeValue(thisval);
 
-                   } else if ( type1.isFloat() && type2.isFloat())
-                   {
-                       boolean thisval = (Float) num1.getValue() > (Float) num2.getValue();
-                       val = new TypeValue(thisval);
-                   }
-             }
+                } else if ( type1.isFloat() && type2.isFloat())
+                {
+                    boolean thisval = (Float) num1.getValue() > (Float) num2.getValue();
+                    val = new TypeValue(thisval);
+                }
+                else 
+                {
+                    ErrorType.type_mismatch_error("GREATERTHAN");
+                }
+            }
             
             else if (Operator == sym.LESSTHANEQ)
             {
-                   if ( type1.isInteger() && type2.isInteger() )
-                   {
-                        boolean thisval = (Integer) num1.getValue() <= (Integer) num2.getValue();
-                        val = new TypeValue(thisval);
+                if ( type1.isInteger() && type2.isInteger() )
+                {
+                     boolean thisval = (Integer) num1.getValue() <= (Integer) num2.getValue();
+                     val = new TypeValue(thisval);
 
-                   } else if ( type1.isFloat() && type2.isFloat())
-                   {
-                       boolean thisval = (Float) num1.getValue() <= (Float) num2.getValue();
-                       val = new TypeValue(thisval);
-                   }
-             }
+                } else if ( type1.isFloat() && type2.isFloat())
+                {
+                    boolean thisval = (Float) num1.getValue() <= (Float) num2.getValue();
+                    val = new TypeValue(thisval);
+                }
+                else 
+                {
+                    ErrorType.type_mismatch_error("LESSTHANEQ");
+                }
+            }
             
             else if (Operator == sym.GREATERTHANEQ)
             {
-                   if ( type1.isInteger() && type2.isInteger() )
-                   {
-                        boolean thisval = (Integer) num1.getValue() >= (Integer) num2.getValue();
-                        val = new TypeValue(thisval);
+                if ( type1.isInteger() && type2.isInteger() )
+                {
+                     boolean thisval = (Integer) num1.getValue() >= (Integer) num2.getValue();
+                     val = new TypeValue(thisval);
 
-                   } else if ( type1.isFloat() && type2.isFloat())
-                   {
-                       boolean thisval = (Float) num1.getValue() >= (Float) num2.getValue();
-                       val = new TypeValue(thisval);
-                   }
-             }
+                } else if ( type1.isFloat() && type2.isFloat())
+                {
+                    boolean thisval = (Float) num1.getValue() >= (Float) num2.getValue();
+                    val = new TypeValue(thisval);
+                }
+                else 
+                {
+                    ErrorType.type_mismatch_error("GREATERTHANEQ");
+                }
+                   
+            }
+            
             else if (Operator == sym.NOTEQUAL)
             {
-                   if ( type1.isInteger() && type2.isInteger() )
-                   {
-                        boolean thisval = (Integer) num1.getValue() != (Integer) num2.getValue();
-                        val = new TypeValue(thisval);
+                if ( type1.isInteger() && type2.isInteger() )
+                {
+                     boolean thisval = (Integer) num1.getValue() != (Integer) num2.getValue();
+                     val = new TypeValue(thisval);
 
-                   } else if ( type1.isFloat() && type2.isFloat())
-                   {
-                       boolean thisval = (Float) num1.getValue() != (Float) num2.getValue();
-                       val = new TypeValue(thisval);
-                   }
-             }
+                } else if ( type1.isFloat() && type2.isFloat())
+                {
+                    boolean thisval = (Float) num1.getValue() != (Float) num2.getValue();
+                    val = new TypeValue(thisval);
+                }
+                else 
+                {
+                    ErrorType.type_mismatch_error("NOTEQUAL");
+                }
+            }
             
              else if (Operator == sym.AND)
             {
-                    if ( type1.isBool() && type2.isBool() )
-                   {
-                        boolean thisval = (Boolean) num1.getValue() && (Boolean) num2.getValue();
-                        val = new TypeValue(thisval);
-                   }
-             }
+                if ( type1.isBool() && type2.isBool() )
+                {
+                     boolean thisval = (Boolean) num1.getValue() && (Boolean) num2.getValue();
+                     val = new TypeValue(thisval);
+                }
+                else 
+                {
+                    ErrorType.type_mismatch_error("AND");
+                }
+                    
+            }
             else if (Operator == sym.OR)
             {
-                   if ( type1.isBool() && type2.isBool() )
-                   {
-                        boolean thisval = (Boolean) num1.getValue() || (Boolean) num2.getValue();
-                        val = new TypeValue(thisval);
-                   }
-
-             }
+                if ( type1.isBool() && type2.isBool() )
+                {
+                     boolean thisval = (Boolean) num1.getValue() || (Boolean) num2.getValue();
+                     val = new TypeValue(thisval);
+                }
+                else 
+                {
+                    ErrorType.type_mismatch_error("OR");
+                }
+            }
 
         }
         else if (tag[5]) {
@@ -400,8 +398,12 @@ public class Aexp {
             {
                 if ( OneOperand.getArg().getType().isBool())
                 {
-                        boolean thisval = !(Boolean) OneOperand.getArg().getval().getValue();
-                        val = new TypeValue(thisval);
+                    boolean thisval = !(Boolean) OneOperand.getArg().getval().getValue();
+                    val = new TypeValue(thisval);
+                }
+                else 
+                {
+                    ErrorType.type_mismatch_error("NOT");
                 }
             }
         }

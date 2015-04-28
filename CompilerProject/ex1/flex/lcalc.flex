@@ -104,22 +104,23 @@ boolean = true|false
     "<="       { return symbol(sym.LESSTHANEQ); }
     ">="       { return symbol(sym.GREATERTHANEQ); }
     "<>"       { return symbol(sym.NOTEQUAL); }
-    "||"       { return symbol(sym.AND); }
-    "&&"       { return symbol(sym.OR); }
+    "&&"       { return symbol(sym.AND); }
+    "||"       { return symbol(sym.OR); }
     "!"        { return symbol(sym.NOT); }
     "print"    { return symbol(sym.PRINT); }
     "if"       { return symbol(sym.IF); }
     "then"     { return symbol(sym.THEN); }
     "else"     {return symbol(sym.ELSE);  }
     "endif"    {return symbol(sym.ENDIF);  }
-    "begin"    { return symbol(sym.BEGIN); }
-    "end"      { return symbol(sym.END); }
+    "{"        { return symbol(sym.BEGIN); }
+    "}"        { return symbol(sym.END); }
     "while"    { return symbol(sym.WHILE); }
     "do"       { return symbol(sym.DO); }
-    "boolean"  { return symbol(sym.BOOL); }
+    "bool"     { return symbol(sym.BOOL); }
     "int"      { return symbol(sym.INT); }
     "float"    { return symbol(sym.FLOAT); }
     "void"     { return symbol(sym.VOID); }
+    "return"   { return symbol(sym.RETURN);}
 
     {int}      {return symbol(sym.INTEGER, new Integer(yytext()));}
     {float}    {return symbol(sym.FLOATING, new Float(yytext()));}

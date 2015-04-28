@@ -1,27 +1,12 @@
 /* ----------------------User code--------------------*/
 
 package src;
-import java_cup.runtime.*;
-
-parser code {:
- public void type_error (String context,String message)
-    {
-        System.err.println("Type Error:"+ "<"+context+">" + message);
-        System.exit(1);
-    }
-
- public void sem_error(String context , String message)
-    {
-     	System.err.println("Semantic Error:"+ "<"+context+">" + message);
-        System.exit(1);
-    }
-:};
    
 /* ------------Grammar symbol declarations----------- */
    
 terminal                PLUS, MINUS, TIMES, DIVIDE, LPAREN, RPAREN, SEMI, EQ, PRINT, IF, THEN,ELSE, WHILE, DO, 
                         BEGIN, END, INT, FLOAT, BOOL, ENDIF, EQUALTO, LESSTHAN, GREATERTHAN,
-                        LESSTHANEQ, GREATERTHANEQ, NOTEQUAL, AND, OR, NOT,VOID;
+                        LESSTHANEQ, GREATERTHANEQ, NOTEQUAL, AND, OR, NOT,VOID, RETURN;
 terminal Boolean        BOOLEAN;
 terminal Integer        INTEGER;
 terminal Float          FLOATING;
@@ -29,48 +14,57 @@ terminal String         ID;
 
 non terminal Object    program, function_list;
 non terminal Type      type;
-non terminal Astat     statement,assignment,statement_part,print,ifthen,while,declaration,functiondecl;
+non terminal Astat     statement,assignment,statement_part,print,ifthen,while,declaration,functiondecl,functioncall;
 non terminal Lstat     statement_list;
 non terminal Aexp      expr, term,factor,logic,comparison;
 
    
 /* ------------Grammar rules----------- */
 
-program   ::= statement_list:s
+program ::= statement_list:s
+                {: s.execute();:}
+            |function_list:fl statement_list:s
+                {: s.execute();:}
+            |statement_list:s function_list:fl
                 {: s.execute(); :}
-              |function_list:fl statement_list:s
-                {: s.execute(); :};
+            |function_list:fl;
 
-statement_list ::=   statement_list:l statement_part:s
-                        {: RESULT = new Lstat(l,s) ; :}
-                     | statement_part:s
-                        {: RESULT = new Lstat(s); :};
 
-function_list ::=  function_list:fl functiondecl:fd|
-                   functiondecl:fd;
+statement_list ::=  statement_list:l statement:s
+                        {: RESULT = new Lstat(l,s) ; :}                 
+                   | statement:s
+                      {: RESULT = new Lstat(s); :};
 
-functiondecl ::= VOID ID:i LPAREN RPAREN BEGIN statement_list:s END
-                    {: RESULT = Astat.functiondecl(i,s); :};
+function_list ::=  function_list:fl functiondecl:fd
+                  |functiondecl:fd;
 
-statement_part ::=   statement:s
+statement    ::=    assignment:s SEMI
+                        {: RESULT = s;:}
+                    |declaration:s SEMI
+                        {:RESULT = s; :}
+                    | print:s SEMI
                         {: RESULT = s; :}
-                     SEMI;
+                    | ifthen:s
+                        {: RESULT = s; :}
+                    | while:s
+                        {: RESULT = s; :}
+                    | BEGIN statement_list:s END 
+                        {: RESULT = Astat.block(s); :}
+                    |functioncall:s SEMI
+                        {: RESULT = s; :};
 
-statement    ::= assignment:s
-                    {: RESULT = s; :}
-                |declaration:s
-                    {: RESULT = s; :}
-                | print:s
-                    {: RESULT = s; :}
-                | ifthen:s
-                    {: RESULT = s; :}
-                | while:s
-                    {: RESULT = s; :}
-                | BEGIN statement_list:s END
-                    {: RESULT = Astat.block(s); :};
+functiondecl ::= VOID ID:i LPAREN RPAREN BEGIN statement_list:l END
+                    {: RESULT = Astat.functiondecl( i , l); :}
+                 |type:t ID:i LPAREN RPAREN BEGIN statement_list:s RETURN expr:e SEMI END
+                    {: RESULT = Astat.functiondecl( t , i, s, e); :};
+
+functioncall ::= ID:i LPAREN RPAREN 
+                  {: RESULT = Astat.functioncall(i); :}
+                 |ID:i1 EQ ID:i2 LPAREN RPAREN
+                    {: RESULT = Astat.functioncall(i1,i2); :};
 
 declaration ::= type:t ID:i
-                    {:  RESULT = Astat.assignment(t, i); :};
+                    {:  RESULT = Astat.declaration(t, i); :};
 
 assignment   ::= ID:i EQ expr:e
                     {: RESULT = Astat.assignment(i,e); :}

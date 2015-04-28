@@ -1,0 +1,59 @@
+int a = 5;
+int b;
+float c = 3.5;
+float d = 4.3;
+float e = c*(d-3.4);
+bool sim = true;
+
+b = a +10;
+
+print b;
+print e;
+print (sim && false);
+print (!sim);
+
+
+int s = 5;
+int t = 1;
+
+if(s < 10)
+{
+    while(t <= 5) do
+    {
+        print t;
+        t = t + 1;
+    }
+}
+else
+{
+    print 1;
+}
+endif
+
+
+int k;
+k = test();
+print k;
+
+int test()
+{
+    int aaa = 10 + 10 * 50;
+    if(aaa < 100)
+        aaa = 1;
+    else
+        aaa = 100;
+    endif
+    return aaa;
+}
+
+
+
+
+
+
+
+
+ 
+
+
+
